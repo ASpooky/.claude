@@ -13,7 +13,7 @@
   "mcpServers": {
     "investigation-mcp": {
       "command": "node",
-      "args": ["C:\\Users\\spbg-\\.claude\\mcp-servers\\investigation-mcp\\dist\\index.js"]
+      "args": ["~/.claude/mcp-servers/investigation-mcp/dist/index.js"]
     }
   },
   "hooks": {

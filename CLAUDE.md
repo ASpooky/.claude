@@ -1,4 +1,48 @@
-﻿## investigation-mcp
+# 開発スタイル
+
+TDD で開発する（探索 → Red → Green → Refactoring）。
+KPI やカバレッジ目標が与えられたら、達成するまで試行する。
+不明瞭な指示は質問して明確にする。
+
+# コード設計
+
+- 関心の分離を保つ
+- 状態とロジックを分離する
+- 可読性と保守性を重視する
+- コントラクト層（API/型）を厳密に定義し、実装層は再生成可能に保つ
+- 静的検査可能なルールはプロンプトではなく、その環境の linter か ast-grep で記述する
+
+# ツール
+
+- タスク: justfile
+- Node.js: pnpm, v24+
+- E2E: playwright
+
+# 言語
+
+- 公開リポジトリではドキュメントやコミットメッセージを英語で記述する
+
+# 環境
+
+- GitHub: ASpooky
+- リポジトリ: ghq 管理（`~/ghq/github.com/owner/repo`）
+
+# 破壊的操作
+
+- ツール（home-manager / brew / chezmoi / pre-commit / pip / npm 等）が auto-rename した `*.backup` / `*.orig` / `*.pre-*` 系を `rm` する前に、内容を `cat` して会話に出すか別ファイルに dump する。最低 1 回の表示を経てから削除する
+  （理由: 自分が作ったファイルではないので、消すと「元に何が入っていたか」が永久に失われる。`/etc/zshenv` のような system-level 置き土産が紛れていても気づけなくなる）
+
+# スキル作成
+
+新規 skill を作るとき、配置先を次の指針で決める:
+
+- **project 固有** (`<repo>/.claude/skills/` に置く / 該当 repo の `apm.yml` で配布): 特定 repo のドメイン知識・規約・ファイルレイアウトに依存し、他 repo で使う見込みがない
+- **グローバル** (`~/.claude/skills/` 直置き or APM global): 言語・ツール横断、複数 repo で再利用可能、運用ノウハウ
+- **判断不能なとき**: ユーザーに「project 固有かグローバルか」を質問してから作成（理由: 後から移動するとパス参照や apm.yml 設定が壊れやすい）
+
+外部公開・他者の repo からも参照される可能性があれば upstream repo に置いて APM 登録、自分環境専用なら chezmoi 管理 → 詳細は `chezmoi-management` skill「APM vs chezmoi の境界」節を参照。
+
+## investigation-mcp
 
 バグ調査時は以下のMCPツールを活用すること。
 
