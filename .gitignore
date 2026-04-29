@@ -23,5 +23,8 @@ todos/
 mcp-servers/*/node_modules/
 mcp-servers/*/dist/
 
+# Plugin marketplace data
+plugins/
+
 # Per-project data
 projects/

@@ -23,7 +23,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node C:\\Users\\spbg-\\.claude\\mcp-servers\\investigation-mcp\\hooks\\on-prompt.mjs"
+            "command": "node ~/.claude/mcp-servers/investigation-mcp/hooks/on-prompt.mjs"
           }
         ]
       }
@@ -34,7 +34,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node C:\\Users\\spbg-\\.claude\\mcp-servers\\investigation-mcp\\hooks\\on-stop.mjs"
+            "command": "node ~/.claude/mcp-servers/investigation-mcp/hooks/on-stop.mjs"
           }
         ]
       }
