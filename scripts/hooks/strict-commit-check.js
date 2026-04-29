@@ -1,4 +1,4 @@
-const { execSync } = require('child_process');
+const { spawnSync } = require('child_process');
 const fs = require('fs');
 
 let data = '';
@@ -15,11 +15,9 @@ process.stdin.on('end', () => {
   const issues = [];
 
   // staged ファイルのチェック
-  try {
-    const staged = execSync('git diff --cached --name-only', { encoding: 'utf8' });
-    const files = staged.trim().split('\n').filter(Boolean);
-
-    for (const f of files) {
+  const diff = spawnSync('git', ['diff', '--cached', '--name-only'], { encoding: 'utf8' });
+  if (diff.status === 0) {
+    for (const f of diff.stdout.trim().split('\n').filter(Boolean)) {
       if (!/\.(ts|tsx|js|jsx|mjs|cjs)$/.test(f)) continue;
       if (!fs.existsSync(f)) continue;
       const content = fs.readFileSync(f, 'utf8');
@@ -27,17 +25,16 @@ process.stdin.on('end', () => {
       if (/\bTODO\b/.test(content))    issues.push(`  TODO 残存: ${f}`);
       if (/\bFIXME\b/.test(content))   issues.push(`  FIXME 残存: ${f}`);
     }
-  } catch {}
+  }
 
   // TypeScript チェック（tsconfig.json がある場合のみ）
   if (fs.existsSync('tsconfig.json')) {
-    try {
-      execSync('npx tsc --noEmit 2>&1', { stdio: 'pipe' });
-    } catch (e) {
-      const errors = (e.stdout || '').split('\n')
+    const tsc = spawnSync('npx', ['tsc', '--noEmit'], { encoding: 'utf8' });
+    if (tsc.status !== 0) {
+      tsc.stderr.split('\n')
         .filter(l => /error TS/.test(l))
-        .slice(0, 5);
-      errors.forEach(l => issues.push(`  TypeScript: ${l.trim()}`));
+        .slice(0, 5)
+        .forEach(l => issues.push(`  TypeScript: ${l.trim()}`));
     }
   }
 
