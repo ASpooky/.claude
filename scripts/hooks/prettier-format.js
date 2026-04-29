@@ -8,7 +8,7 @@ process.stdin.on('end', () => {
   const filePath = input.tool_input?.file_path || '';
 
   if (/\.(ts|tsx|js|jsx|mjs|cjs)$/.test(filePath) && fs.existsSync(filePath)) {
-    spawnSync('npx', ['prettier', '--write', filePath], { stdio: 'pipe' });
+    spawnSync('npx', ['prettier', '--write', filePath], { stdio: 'pipe', shell: true });
   }
 
   process.stdout.write(data);
