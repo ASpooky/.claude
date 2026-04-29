@@ -26,6 +26,7 @@ mcp-servers/*/dist/
 # Active lifecycle mode (written by /mode command)
 settings.local.json
 .active-modes.json
+.claude/
 
 # Session state files (written by session hooks)
 sessions/

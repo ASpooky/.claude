@@ -7,8 +7,21 @@ const { spawnSync } = require('child_process');
 
 const CLAUDE_DIR = path.join(os.homedir(), '.claude');
 const PROFILES_DIR = path.join(CLAUDE_DIR, 'profiles');
-const ACTIVE_FILE = path.join(CLAUDE_DIR, '.active-modes.json');
-const SETTINGS_LOCAL = path.join(CLAUDE_DIR, 'settings.local.json');
+
+// プロジェクトの .claude/ があればそこ、なければグローバルにフォールバック
+function resolveLocalDir() {
+  const gitRoot = spawnSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' });
+  if (gitRoot.status === 0) {
+    const projectClaudeDir = path.join(gitRoot.stdout.trim(), '.claude');
+    if (!fs.existsSync(projectClaudeDir)) fs.mkdirSync(projectClaudeDir, { recursive: true });
+    return projectClaudeDir;
+  }
+  return CLAUDE_DIR;
+}
+
+const LOCAL_DIR = resolveLocalDir();
+const ACTIVE_FILE = path.join(LOCAL_DIR, '.active-modes.json');
+const SETTINGS_LOCAL = path.join(LOCAL_DIR, 'settings.local.json');
 
 const readJSON = (p, def = {}) => { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return def; } };
 const writeJSON = (p, d) => fs.writeFileSync(p, JSON.stringify(d, null, 2) + '\n');
@@ -43,7 +56,7 @@ function apply(active) {
   writeJSON(ACTIVE_FILE, active);
   writeJSON(SETTINGS_LOCAL, mergeProfiles(active));
   console.log(`active: [${active.join(', ') || 'none'}]`);
-  console.log(`→ ~/.claude/settings.local.json を更新しました`);
+  console.log(`→ ${SETTINGS_LOCAL} を更新しました`);
 }
 
 const [flag, name] = process.argv.slice(2);
