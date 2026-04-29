@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(pip:*)",
+      "Bash(pytest:*)",
+      "Bash(git:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)"
+    ],
+    "deny": []
+  },
+  "mcpServers": {
+    "investigation-mcp": {
+      "command": "node",
+      "args": ["C:\\Users\\spbg-\\.claude\\mcp-servers\\investigation-mcp\\dist\\index.js"]
+    }
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node C:\\Users\\spbg-\\.claude\\mcp-servers\\investigation-mcp\\hooks\\on-prompt.mjs"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node C:\\Users\\spbg-\\.claude\\mcp-servers\\investigation-mcp\\hooks\\on-stop.mjs"
+          }
+        ]
+      }
+    ]
+  }
+}

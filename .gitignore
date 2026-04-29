@@ -1,0 +1,27 @@
+# Claude runtime data
+history.jsonl
+.credentials.json
+mcp-needs-auth-cache.json
+stats-cache.json
+
+# Cache & session directories
+cache/
+sessions/
+session-env/
+shell-snapshots/
+paste-cache/
+file-history/
+ide/
+debug/
+backups/
+statsig/
+plans/
+tasks/
+todos/
+
+# MCP build artifacts
+mcp-servers/*/node_modules/
+mcp-servers/*/dist/
+
+# Per-project data
+projects/
