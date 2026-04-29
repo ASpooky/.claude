@@ -12,7 +12,10 @@ const PROFILES_DIR = path.join(CLAUDE_DIR, 'profiles');
 function resolveLocalDir() {
   const gitRoot = spawnSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' });
   if (gitRoot.status === 0) {
-    const projectClaudeDir = path.join(gitRoot.stdout.trim(), '.claude');
+    const root = gitRoot.stdout.trim();
+    // ~/.claude is the global config dir itself — don't nest .claude inside it
+    if (path.resolve(root) === path.resolve(CLAUDE_DIR)) return CLAUDE_DIR;
+    const projectClaudeDir = path.join(root, '.claude');
     if (!fs.existsSync(projectClaudeDir)) fs.mkdirSync(projectClaudeDir, { recursive: true });
     return projectClaudeDir;
   }
