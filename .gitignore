@@ -25,6 +25,7 @@ mcp-servers/*/dist/
 
 # Active lifecycle mode (written by /mode command)
 settings.local.json
+.active-modes.json
 
 # Plugin marketplace data
 plugins/

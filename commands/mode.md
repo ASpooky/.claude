@@ -1,22 +1,36 @@
-ライフサイクルモードを切り替える。`~/.claude/profiles/<mode>.json` を `~/.claude/settings.local.json` に書き出し、対応する `~/.claude/contexts/<mode>.md` があればセッションに適用する。
+ライフサイクルモードを管理する。`~/.claude/.active-modes.json` でアクティブなプロファイルリストを管理し、変更のたびに全プロファイルを再マージして `~/.claude/settings.local.json` に書き出す。
 
-## 引数
+## 使い方
 
-`$ARGUMENTS` — モード名。省略または `list` で利用可能なモードを一覧表示。
+| コマンド | 動作 |
+|---|---|
+| `/mode` または `/mode list` | 現在アクティブなモードと利用可能なプロファイルを表示 |
+| `/mode --preset <name>` | アクティブリストを `[name]` だけにリセット |
+| `/mode --add <name>` | 現在のリストに `<name>` を追加 |
+| `/mode --delete <name>` | 現在のリストから `<name>` を削除 |
 
 ## 手順
 
-1. **引数が空または `list`** の場合:
-   - `~/.claude/profiles/` 配下の `*.json` ファイル名を列挙し、各ファイルの `description` フィールドを添えて表示して終了する。
+### list（引数なし or `list`）
 
-2. **モード名が指定された場合**:
-   a. `~/.claude/profiles/<mode>.json` を Read する。存在しなければエラーを出して一覧を表示して終了する。
-   b. 読み込んだ JSON を `~/.claude/settings.local.json` に Write する。
-   c. `~/.claude/contexts/<mode>.md` が存在すれば Read してその内容を現在のセッションの追加指示として適用する。
-   d. 適用したモードと主な変更点を 2〜3 行で報告する。
+1. `~/.claude/.active-modes.json` を Read する（なければ `[]` とみなす）
+2. `~/.claude/profiles/` の `*.json` ファイルを Glob で列挙する
+3. 各プロファイルの `description` フィールドを読み、アクティブなものに `[active]` を付けて表示する
 
-## 設計メモ
+### --preset / --add / --delete 共通フロー
 
-- `settings.local.json` は `settings.json` より優先され、hooks は**マージ（連結）**される。
-- プロファイルは「追加」設計: `minimal` を適用すると `{}` になりベース設定のみ有効になる。
-- hooks の無効化はベース `settings.json` から削除する方法のみ（上書き不可）。
+1. `~/.claude/.active-modes.json` を Read する（なければ `[]`）
+2. 指定プロファイルが `~/.claude/profiles/<name>.json` として存在するか確認する。なければエラーを出して終了する
+3. リストを更新する:
+   - `--preset <name>`: リストを `[<name>]` に置き換える
+   - `--add <name>`: リストに `<name>` を追加する（重複は無視）
+   - `--delete <name>`: リストから `<name>` を除去する
+4. 更新したリストを `~/.claude/.active-modes.json` に Write する
+5. **再マージ**: アクティブリストの各プロファイル JSON を順番に Read し、以下のルールでマージした結果を `~/.claude/settings.local.json` に Write する:
+   - `hooks` の各イベント配列（PreToolUse, PostToolUse, Stop など）は**連結**する
+   - `permissions.allow` / `permissions.deny` は**連結**する
+   - `mcpServers` はオブジェクトマージ（後勝ち）
+   - `description` フィールドはスキップする（settings.local.json に含めない）
+   - リストが空なら `{}` を書き出す
+6. `--add` の場合: `~/.claude/contexts/<name>.md` があれば Read してセッションに適用する
+7. 結果を報告する: `active: [strict, review]` のように現在のリストと主な変更点を 2〜3 行で示す
