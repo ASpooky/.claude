@@ -27,6 +27,9 @@ mcp-servers/*/dist/
 settings.local.json
 .active-modes.json
 
+# Session state files (written by session hooks)
+sessions/
+
 # Plugin marketplace data
 plugins/
 

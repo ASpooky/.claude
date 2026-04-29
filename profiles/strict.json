@@ -1,15 +1,20 @@
 {
-  "description": "コミット前の厳格チェック。console.log・TODO 検出 + TypeScript エラーがあればブロック。",
+  "description": "コミット前厳格チェック + 編集時 TS チェック・console.log 警告。",
   "hooks": {
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ~/.claude/scripts/hooks/strict-commit-check.js"
-          }
-        ]
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/strict-commit-check.js"}]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/ts-check.js"}]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/console-log-warn.js"}]
       }
     ]
   }

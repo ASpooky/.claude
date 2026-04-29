@@ -1,0 +1,27 @@
+{
+  "description": "セッション状態の永続化。start/end で状態管理、PreCompact で圧縮前保存、evaluate-session で /retrospective 促進。",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/session-start.js"}]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/session-end.js"}]
+      },
+      {
+        "matcher": "",
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/evaluate-session.js"}]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/pre-compact.js"}]
+      }
+    ]
+  }
+}

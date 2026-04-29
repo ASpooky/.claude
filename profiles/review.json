@@ -1,15 +1,16 @@
 {
-  "description": "Stop 時にコード変更を検知して /review 実行を提案する。レビュワー同席モード。",
+  "description": "Prettier 自動フォーマット + Stop 時にレビュー提案。レビュワー同席モード。",
   "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/prettier-format.js"}]
+      }
+    ],
     "Stop": [
       {
         "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node ~/.claude/scripts/hooks/review-reminder.js"
-          }
-        ]
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/review-reminder.js"}]
       }
     ]
   }
