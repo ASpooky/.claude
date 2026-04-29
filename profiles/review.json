@@ -1,6 +1,12 @@
 {
-  "description": "Prettier 自動フォーマット + Stop 時にレビュー提案。レビュワー同席モード。",
+  "description": "Prettier 自動フォーマット + レビュー未実施のコミットをブロック。/review → /mode --reviewed の順で解除。",
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/review-commit-check.js"}]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",

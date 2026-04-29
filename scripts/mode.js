@@ -2,6 +2,8 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const crypto = require('crypto');
+const { spawnSync } = require('child_process');
 
 const CLAUDE_DIR = path.join(os.homedir(), '.claude');
 const PROFILES_DIR = path.join(CLAUDE_DIR, 'profiles');
@@ -55,6 +57,22 @@ if (!flag || flag === 'list') {
     const mark = active.includes(n) ? ' ✓' : '  ';
     console.log(`${mark} ${n.padEnd(12)} ${desc}`);
   }
+  process.exit(0);
+}
+
+// --reviewed: レビュー済みフラグをカレントリポジトリに立てる
+if (flag === '--reviewed') {
+  const gitRoot = spawnSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' });
+  if (gitRoot.status !== 0) {
+    console.error('git リポジトリが見つかりません');
+    process.exit(1);
+  }
+  const repoHash = crypto.createHash('md5').update(gitRoot.stdout.trim()).digest('hex').slice(0, 8);
+  const sessionsDir = path.join(CLAUDE_DIR, 'sessions');
+  if (!fs.existsSync(sessionsDir)) fs.mkdirSync(sessionsDir, { recursive: true });
+  const flagFile = path.join(sessionsDir, `review-cleared-${repoHash}.flag`);
+  fs.writeFileSync(flagFile, new Date().toISOString());
+  console.log(`review 済みフラグを設定しました (${path.basename(gitRoot.stdout.trim())})`);
   process.exit(0);
 }
 
