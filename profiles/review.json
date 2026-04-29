@@ -1,0 +1,16 @@
+{
+  "description": "Stop 時にコード変更を検知して /review 実行を提案する。レビュワー同席モード。",
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ~/.claude/scripts/hooks/review-reminder.js"
+          }
+        ]
+      }
+    ]
+  }
+}

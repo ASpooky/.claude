@@ -23,6 +23,9 @@ todos/
 mcp-servers/*/node_modules/
 mcp-servers/*/dist/
 
+# Active lifecycle mode (written by /mode command)
+settings.local.json
+
 # Plugin marketplace data
 plugins/
 
