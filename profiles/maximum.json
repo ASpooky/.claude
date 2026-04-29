@@ -1,0 +1,55 @@
+{
+  "description": "全フック有効。strict + review + session をすべて適用。",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/strict-commit-check.js"}]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/review-commit-check.js"}]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/ts-check.js"}]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/console-log-warn.js"}]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/prettier-format.js"}]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/review-reminder.js"}]
+      },
+      {
+        "matcher": "",
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/session-end.js"}]
+      },
+      {
+        "matcher": "",
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/evaluate-session.js"}]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/session-start.js"}]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [{"type": "command", "command": "node ~/.claude/scripts/hooks/pre-compact.js"}]
+      }
+    ]
+  }
+}
